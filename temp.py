@@ -1,56 +1,58 @@
-yellow_array = [[43, 57], [44, 58], [44, 59], [44, 100], [45, 50], [45, 51], [45, 52], [45, 93], [45, 94],
- [46, 50], [46, 51], [46, 52], [46, 57], [46, 58], [46, 59], [46, 92], [46, 93], [47, 50],
- [47, 51], [47, 52], [47, 53], [47, 54], [47, 55], [47, 56], [47, 57], [47, 93], [47, 94],
- [47, 95], [47, 96], [47, 97], [47, 98], [48, 100], [49, 57], [49, 99], [67, 79], [68, 72],
- [68, 73], [68, 79], [68, 93], [68, 94], [68, 95], [68, 100], [69, 71], [69, 72], [69, 79],
- [69, 92], [69, 93], [69, 94], [70, 72], [70, 73], [70, 79], [70, 80], [70, 92], [70, 93],
- [70, 94], [70, 101], [71, 74], [71, 75], [71, 76], [71, 77], [71, 80], [71, 95], [71, 96],
- [71, 97], [71, 101], [72, 77], [72, 78], [72, 79], [72, 100], [91, 141], [92, 134],
- [92, 135], [92, 136], [92, 141], [92, 142], [93, 134], [93, 140], [93, 141], [93, 142],
- [94, 135], [94, 136], [94, 137], [94, 138], [94, 139], [94, 141], [95, 138], [95, 142],
- [95, 143], [115, 135], [115, 142], [116, 134], [116, 135], [116, 136], [116, 141], [116, 142],
- [117, 134], [117, 135], [117, 136], [117, 137], [117, 141], [117, 142], [118, 134], [118, 137],
- [118, 138], [118, 143], [119, 139], [185, 121], [186, 112], [186, 113], [186, 114], [186, 115],
- [186, 121], [187, 112], [187, 113], [187, 114], [187, 121], [188, 114], [188, 115], [188, 116], [188, 117],
- [188, 118], [188, 121], [188, 122], [189, 117], [189, 118], [189, 119], [190, 120], [209, 94], [209, 95],
- [210, 92], [210, 93], [210, 94], [210, 99], [210, 100], [211, 92], [211, 93], [211, 94], [211, 95], [211, 101],
- [212, 95], [212, 96], [212, 101], [213, 97]]
+import cv2
+from PIL import  Image
+import matplotlib as plt
+def view_image(image):
+    cv2.namedWindow('Display', cv2.WINDOW_NORMAL)
+    cv2.imshow('Display', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-def rows(array):
-    array_value = 0
-    row1 = []
-    row2 = []
-    row3 = []
-    row4 = []
-    row5 = []
-    row6 = []
-    while array_value < len(array):
-        if (int(array[array_value][0])) <= 55:
-            row1.append(array[array_value])
-            array_value += 1
-        elif (int(array[array_value][0])) <= 85:
-            row2.append(array[array_value])
-            array_value += 1
-        elif (int(array[array_value][0])) <= 105:
-            row3.append(array[array_value])
-            array_value += 1
-        elif (int(array[array_value][0])) <= 125:
-            row4.append(array[array_value])
-            array_value += 1
-        elif (int(array[array_value][0])) <= 195:
-            row5.append(array[array_value])
-            array_value += 1
-        elif (int(array[array_value][0])) <= 220:
-            row6.append(array[array_value])
-            array_value += 1
-    full_rows = [row1, row2, row3, row4, row5, row6]
-    return full_rows
+# Convert to any image colour type
+def convert(image, colour):
+    if colour == "hsv":
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        return hsv
+    elif colour == "rgb":
+        rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        return rgb
+    elif colour == "rgb":
+        yuv = cv2.cvtColor(image, cv2.COLOR_BGR2YUV)
+        return yuv
+    elif colour == "gray":
+        G = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        return G
+    print("Error!")
+    return 0
 
-rows = rows(yellow_array)
+def histogram(image):
+    G = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    Values = G.ravel()
+    plt.hist(Values, bins=256, range=[0, 256])
+    H = cv2.equalizeHist(G)
+    return H
 
-print(rows[0])
-print(rows[1])
-print(rows[2])
-print(rows[3])
-print(rows[4])
-print(rows[5])
+# Resize an image
+def resize(image, w, h):
+    S = cv2.resize(image, dsize=(w,h))
+    return S
+
+# Crop an image
+def crop(image, x1, y1, x2, y2):
+    C = image[x1:x2, y1:y2]
+    return C
+
+# Rotate an image
+def rotate(image, cx, cy, d, s):
+    M = cv2.getRotationMatrix2D(center=(cx, cy), angle=d, scale=s)
+    R = cv2.warpAffine(I, M=M, dsize=(w, h))
+
+# Add/Layer images together
+def addition(I1, I2):
+    A = cv2.add(I1, I2)
+    return A
+
+# Function that sharpens the image
+def sharpen(image):
+    kernel = np.array([[(1 / 9), (1 / 9), (1 / 9)], [(1 / 9), (1 / 9), (1 / 9)], [(1 / 9), (1 / 9), (1 / 9)]])
+    output = cv2.filter2D(image, -1, kernel)
+    return output
